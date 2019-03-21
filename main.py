@@ -1,7 +1,7 @@
 import numpy as np  # This module is for operating with numbers and arrays
 import os
 import time
-import string
+import msvcrt
 import cv2 as cv  # image interpreter
 from PIL import ImageGrab  # This is the screencapture module
 import pytesseract
@@ -87,7 +87,7 @@ def Mana():
 
 
 def GetTime():
-    ctime = time.strftime("%Y_%m_%d__%H:%M",time.gmtime())
+    ctime = time.strftime("%Y_%m_%d__%H_%M",time.gmtime())
     return ctime
 
 def RecordData():
@@ -102,18 +102,27 @@ def RecordData():
     data_array = np.append(data_array,KdaScore())
     return  data_array
 
-def WriteData(data_array):
+def CreateFile():
+    name="DATAx%s.txt" % (GetTime())
+    filepath = os.path.join('D:/PERS/Python Workspace/LOLstats/Data', name)
+    if not os.path.exists('D:/PERS/Python Workspace/LOLstats/Data'):
+        os.makedirs('D:/PERS/Python Workspace/LOLstats/Data')
+    return filepath
+def WriteData(data_array,filepath):
 
-    name = str.__add__(GetTime(),".txt")
-    f = open(name,"a+")
+    f = open(filepath,"a+")
     for i in range(data_array.size):
         f.write("%s : %s\r\n" % (data_array[0],data_array[i]))
     f.write("\r\n")
     f.close()
 
 counter = 0
+file = CreateFile()
 
-while (counter < 600):
+while (True):
     data_array = RecordData()
-    WriteData(data_array)
+    WriteData(data_array,file)
     counter += 1
+    print("i")
+    if  msvcrt.kbhit():
+        os._exit(0)
